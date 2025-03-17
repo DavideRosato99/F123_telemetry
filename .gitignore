@@ -9,6 +9,8 @@
 # Ignore build directories
 /build/
 build/
+/.vscode
+.vscode/
 
 # Ignore log files
 *.log
