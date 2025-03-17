@@ -10,7 +10,7 @@ public:
     TelemetrySender(const char *ip, uint16_t port);
     ~TelemetrySender();
 
-    bool sendRandomTelemetry();
+    bool sendRandomTelemetry(float dt);
 
 private:
     int sockfd;

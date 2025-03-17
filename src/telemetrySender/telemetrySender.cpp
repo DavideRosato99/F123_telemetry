@@ -45,9 +45,9 @@ int TelemetrySender::randomInt(int min, int max)
     return rand() % (max - min + 1) + min;
 }
 
-bool TelemetrySender::sendRandomTelemetry()
+bool TelemetrySender::sendRandomTelemetry(float dt)
 {
-    packet.m_header.m_sessionTime += 1.0f;
+    packet.m_header.m_sessionTime += dt;
     packet.m_header.m_frameIdentifier++;
     packet.m_header.m_overallFrameIdentifier++;
 

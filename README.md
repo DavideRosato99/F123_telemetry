@@ -107,6 +107,23 @@ F123_telemetry/
 
 ---
 
+## Pull all updates
+
+To pull all the updates run:
+```bash
+git pull
+git submodule update --init --recursive
+
+```
+
+or simply
+```bash
+git pull --recurse-submodules
+
+```
+
+---
+
 ## 📈 Future Improvements
 
 - Enhanced graphical visualization using plotting libraries.

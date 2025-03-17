@@ -1,20 +1,18 @@
 #include "include/udpReceiver.h"
 #include "include/telemetryHandler.h"
-#include "include/testSender/telemetrySender.h"
+#include "include/telemetrySender/telemetrySender.h"
 #include <iostream>
 #include <cstring>
-
-#ifdef _WIN32
-#include <windows.h> // Sleep
-#else
-#include <unistd.h>
-#endif
+#include <thread>
+#include <chrono>
 
 void runReceiver()
 {
     const uint16_t port = 20777;
     UdpReceiver receiver(port);
-    TelemetryHandler handler("telemetry_log.csv");
+
+    // Pass Rust receiver's IP and port (make sure it matches the Rust UDP listener)
+    TelemetryHandler handler("telemetry_log.csv", "127.0.0.1", 20888);
 
     const size_t bufferSize = 2048;
     char buffer[bufferSize];
@@ -38,8 +36,9 @@ void runSender()
 
     while (true)
     {
-        sender.sendRandomTelemetry();
-        sleep(1); // Windows sleep (1 second)
+        float dt = 0.01;
+        sender.sendRandomTelemetry(dt);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
 

@@ -1,27 +1,34 @@
 #include "include/telemetryHandler.h"
 #include <iostream>
+#include <sstream>
+#include <unistd.h>
 #include <cstring>
 
-TelemetryHandler::TelemetryHandler(const std::string &filename)
+TelemetryHandler::TelemetryHandler(const std::string &filename, const char *plotterIp, uint16_t plotterPort)
 {
-    logFile.open(filename, std::ios::out); // truncates file each run
+    logFile.open(filename, std::ios::out);
     if (!logFile.is_open())
     {
-        std::cerr << "Unable to open log file: " << filename << "\n";
+        std::cerr << "Unable to open file: " << filename << "\n";
     }
     else
     {
-        // Optional: write CSV header at the start
         logFile << "SessionTime,Speed,Gear,RPM\n";
     }
+
+    plotterSocket = socket(AF_INET, SOCK_DGRAM, 0);
+    memset(&plotterAddr, 0, sizeof(plotterAddr));
+    plotterAddr.sin_family = AF_INET;
+    plotterAddr.sin_port = htons(plotterPort);
+    inet_pton(AF_INET, plotterIp, &plotterAddr.sin_addr);
 }
 
 TelemetryHandler::~TelemetryHandler()
 {
     if (logFile.is_open())
-    {
         logFile.close();
-    }
+
+    close(plotterSocket);
 }
 
 void TelemetryHandler::processPacket(const char *buffer, size_t size)
@@ -31,16 +38,9 @@ void TelemetryHandler::processPacket(const char *buffer, size_t size)
 
     const PacketHeader *header = reinterpret_cast<const PacketHeader *>(buffer);
 
-    switch (header->m_packetId)
+    if (header->m_packetId == 6 && size >= sizeof(PacketCarTelemetryData))
     {
-    case 6: // Car Telemetry
-        if (size >= sizeof(PacketCarTelemetryData))
-        {
-            handleCarTelemetry(reinterpret_cast<const PacketCarTelemetryData *>(buffer));
-        }
-        break;
-    default:
-        break;
+        handleCarTelemetry(reinterpret_cast<const PacketCarTelemetryData *>(buffer));
     }
 }
 
@@ -48,16 +48,33 @@ void TelemetryHandler::handleCarTelemetry(const PacketCarTelemetryData *telemetr
 {
     const CarTelemetryData &myCar = telemetry->m_carTelemetryData[telemetry->m_header.m_playerCarIndex];
 
+    float sessionTime = telemetry->m_header.m_sessionTime;
+    int speed = myCar.m_speed;
+    int gear = static_cast<int>(myCar.m_gear);
+    int rpm = myCar.m_engineRPM;
+
+    // Write CSV consistently
     if (logFile.is_open())
     {
-        logFile << telemetry->m_header.m_sessionTime << ", "
-                << myCar.m_speed << ", "
-                << static_cast<int>(myCar.m_gear) << ", "
-                << myCar.m_throttle << ", "
-                << myCar.m_brake << ", "
-                << myCar.m_engineRPM << std::endl;
+        logFile << sessionTime << ","
+                << speed << ","
+                << gear << ","
+                << rpm << "\n";
     }
 
-    // opzionale: stampa a schermo per debug
-    std::cout << "Speed: " << myCar.m_speed << " km/h, Gear: " << (int)myCar.m_gear << "\n";
+    // Optional debug print
+    std::cout << "Speed: " << speed << " km/h, Gear: " << gear << "\n";
+
+    // Corrected function call
+    sendToRustPlotter(sessionTime, speed, gear, rpm);
+}
+
+void TelemetryHandler::sendToRustPlotter(float sessionTime, int speed, int gear, int rpm)
+{
+    std::ostringstream oss;
+    oss << sessionTime << "," << speed << "," << gear << "," << rpm;
+    std::string msg = oss.str();
+
+    sendto(plotterSocket, msg.c_str(), msg.size(), 0,
+           (sockaddr *)&plotterAddr, sizeof(plotterAddr));
 }

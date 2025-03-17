@@ -1,0 +1,38 @@
+[package]
+name = "f123_telemetry_plotter"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+eframe = { version = "0.30.0", default-features = false, features = [
+    "default_fonts",
+    "glow",
+    "persistence",
+    "x11",
+] }
+egui = "0.30.0"
+egui_dock = { version = "0.15.0", features = ["serde"] }
+egui_plot = { version = "0.30.0", features = ["serde"] }
+rand = "0.8.5"
+rust_data_inspector = { git = "https://github.com/Hixos/rust-data-inspector.git" }
+rust_data_inspector_signals = { git = "https://github.com/Hixos/rust-data-inspector.git" }
+serde = "1.0.217"
+thiserror = "2.0.11"
+downsample_rs = { git = "https://github.com/hixos/tsdownsample" }
+
+[features]
+nightly_simd = ["downsample_rs/nightly_simd"]
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tracing-subscriber = "0.3"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+console_error_panic_hook = "0.1.7"
+tracing-wasm = "0.2"
+wasm-bindgen-futures = "0.4"
+
+[profile.release]
+opt-level = 2
+
+[profile.dev.package."*"]
+opt-level = 2
