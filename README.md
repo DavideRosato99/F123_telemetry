@@ -93,12 +93,14 @@ F123_telemetry/
 │   ├── packetTypes.h
 │   ├── telemetryHandler.h
 │   ├── telemetrySender.h
-│   └── udpReceiver.h
+│   |── udpReceiver.h
+|   └── telemetrySender/
+│       ├── telemetrySender.h
 ├── src/
 │   ├── main.cpp
 │   ├── telemetryHandler.cpp
 │   ├── udpReceiver.cpp
-│   └── testSender/
+│   └── telemetrySender/
 │       ├── telemetrySender.cpp
 └── Makefile
 ```

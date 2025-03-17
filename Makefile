@@ -4,13 +4,13 @@ TARGET = F123_telemetry
 BUILD_DIR = build
 SRC_DIR = src
 
-SRC = $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/testSender/*.cpp)
+SRC = $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/telemetrySender/*.cpp)
 OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRC))
 
 all: $(TARGET)
 
 $(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)/testSender
+	mkdir -p $(BUILD_DIR)/telemetrySender
 
 $(TARGET): $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJ)

@@ -1,4 +1,4 @@
-#include "../include/testSender/telemetrySender.h"
+#include "../include/telemetrySender/telemetrySender.h"
 #include <cstdlib>
 #include <ctime>
 #include <unistd.h>
