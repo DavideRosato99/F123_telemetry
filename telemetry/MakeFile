@@ -1,0 +1,15 @@
+CXX = C:/cygwin64/bin/g++
+CXXFLAGS = -Wall -Wextra -O2 -Iinclude
+LDFLAGS =
+
+SRC = src/main.cpp src/udp_receiver.cpp src/telemetry_parser.cpp
+OBJ = $(SRC:.cpp=.o)
+TARGET = telemetry
+
+all: $(TARGET)
+
+$(TARGET): $(OBJ)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJ) $(LDFLAGS)
+
+clean:
+	rm -f $(OBJ) $(TARGET)
