@@ -2,6 +2,7 @@
 *.exe
 *.out
 *.bin
+*.lock
 
 # Ignore object files
 *.o
@@ -11,6 +12,8 @@
 build/
 /.vscode
 .vscode/
+/target
+target/
 
 # Ignore log files
 *.log
