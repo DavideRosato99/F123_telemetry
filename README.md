@@ -31,7 +31,7 @@ The **F1 23 Telemetry Reader** is a lightweight, efficient tool designed to capt
 Clone the repository and build the executable:
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/DavideRosato99/F123_telemetry.git
 cd F123_telemetry
 make
 ```
