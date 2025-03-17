@@ -1,0 +1,3 @@
+[submodule "rust-data-inspector"]
+	path = rust-data-inspector
+	url = https://github.com/Hixos/rust-data-inspector.git
