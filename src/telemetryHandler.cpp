@@ -4,17 +4,24 @@
 
 TelemetryHandler::TelemetryHandler(const std::string &filename)
 {
-    logFile.open(filename, std::ios::out | std::ios::app);
+    logFile.open(filename, std::ios::out); // truncates file each run
     if (!logFile.is_open())
     {
-        std::cerr << "Failed to open file: " << filename << "\n";
+        std::cerr << "Unable to open log file: " << filename << "\n";
+    }
+    else
+    {
+        // Optional: write CSV header at the start
+        logFile << "SessionTime,Speed,Gear,RPM\n";
     }
 }
 
 TelemetryHandler::~TelemetryHandler()
 {
     if (logFile.is_open())
+    {
         logFile.close();
+    }
 }
 
 void TelemetryHandler::processPacket(const char *buffer, size_t size)
@@ -41,9 +48,16 @@ void TelemetryHandler::handleCarTelemetry(const PacketCarTelemetryData *telemetr
 {
     const CarTelemetryData &myCar = telemetry->m_carTelemetryData[telemetry->m_header.m_playerCarIndex];
 
-    std::cout << "Speed: " << myCar.m_speed << " km/h\n";
-    std::cout << "Gear: " << (int)myCar.m_gear << "\n";
-    std::cout << "Throttle: " << myCar.m_throttle << "\n";
-    std::cout << "Brake: " << myCar.m_brake << "\n";
-    std::cout << "RPM: " << myCar.m_engineRPM << "\n";
+    if (logFile.is_open())
+    {
+        logFile << telemetry->m_header.m_sessionTime << ", "
+                << myCar.m_speed << ", "
+                << static_cast<int>(myCar.m_gear) << ", "
+                << myCar.m_throttle << ", "
+                << myCar.m_brake << ", "
+                << myCar.m_engineRPM << std::endl;
+    }
+
+    // opzionale: stampa a schermo per debug
+    std::cout << "Speed: " << myCar.m_speed << " km/h, Gear: " << (int)myCar.m_gear << "\n";
 }
