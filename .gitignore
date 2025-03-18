@@ -14,6 +14,8 @@ build/
 .vscode/
 /target
 target/
+/logs
+logs/
 
 # Ignore log files
 *.log
