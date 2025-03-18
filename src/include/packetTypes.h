@@ -420,6 +420,59 @@ struct PacketCarStatusData
     CarStatusData m_carStatusData[22];
 };
 
+// TYRE SETS (12) --------------------------------------------
+struct TyreSetData
+{
+    uint8_t m_actualTyreCompound; // Actual tyre compound used
+    uint8_t m_visualTyreCompound; // Visual tyre compound used
+    uint8_t m_wear;               // Tyre wear (percentage)
+    uint8_t m_available;          // Whether this set is currently available
+    uint8_t m_recommendedSession; // Recommended session for tyre set
+    uint8_t m_lifeSpan;           // Laps left in this tyre set
+    uint8_t m_usableLife;         // Max number of laps recommended for this compound
+    int16_t m_lapDeltaTime;       // Lap delta time in milliseconds compared to fitted set
+    uint8_t m_fitted;             // Whether the set is fitted or not
+};
+
+struct PacketTyreSetsData
+{
+    PacketHeader m_header; // Header
+
+    uint8_t m_carIdx; // Index of the car this data relates to
+
+    TyreSetData m_tyreSetData[20]; // 13 (dry) + 7 (wet)
+
+    uint8_t m_fittedIdx; // Index into array of fitted tyre
+};
+
+// MOTION EX (13) -------------------------
+struct PacketMotionExData
+{
+    PacketHeader m_header; // Header
+
+    // Extra player car ONLY data
+    float m_suspensionPosition[4];     // Note: All wheel arrays have the following order:
+    float m_suspensionVelocity[4];     // RL, RR, FL, FR
+    float m_suspensionAcceleration[4]; // RL, RR, FL, FR
+    float m_wheelSpeed[4];             // Speed of each wheel
+    float m_wheelSlipRatio[4];         // Slip ratio for each wheel
+    float m_wheelSlipAngle[4];         // Slip angles for each wheel
+    float m_wheelLatForce[4];          // Lateral forces for each wheel
+    float m_wheelLongForce[4];         // Longitudinal forces for each wheel
+    float m_heightOfCOGAboveGround;    // Height of centre of gravity above ground
+    float m_localVelocityX;            // Velocity in local space – metres/s
+    float m_localVelocityY;            // Velocity in local space
+    float m_localVelocityZ;            // Velocity in local space
+    float m_angularVelocityX;          // Angular velocity x-component – radians/s
+    float m_angularVelocityY;          // Angular velocity y-component
+    float m_angularVelocityZ;          // Angular velocity z-component
+    float m_angularAccelerationX;      // Angular acceleration x-component – radians/s/s
+    float m_angularAccelerationY;      // Angular acceleration y-component
+    float m_angularAccelerationZ;      // Angular acceleration z-component
+    float m_frontWheelsAngle;          // Current front wheels angle in radians
+    float m_wheelVertForce[4];         // Vertical forces for each wheel
+};
+
 #pragma pack(pop)
 
 #endif // PACKETTYPES_H

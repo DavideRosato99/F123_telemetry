@@ -12,7 +12,7 @@ void runReceiver()
     UdpReceiver receiver(port);
 
     // Pass Rust receiver's IP and port (make sure it matches the Rust UDP listener)
-    TelemetryHandler handler("telemetry_log.csv", "127.0.0.1", 20888);
+    TelemetryHandler handler("logs/", "127.0.0.1", 20888);
 
     const size_t bufferSize = 2048;
     char buffer[bufferSize];
